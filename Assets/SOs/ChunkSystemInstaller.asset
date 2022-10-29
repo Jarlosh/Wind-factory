@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startupConfig:
     RandomSeed: 0
-    Seed: 1
+    Seed: 940
     ChunkSize: 16
-    StartSize: {x: 2, y: 2, z: 2}
+    StartSize: {x: 4, y: 4, z: 4}
   mesherConfig:
     AsteroidPrefab: {fileID: 8927492116840046825, guid: fb0cb9838db814440b0f79229cba7daa, type: 3}
     meshData: {fileID: 11400000, guid: a2901f197d05b9e459ac71d3180adb4b, type: 2}
@@ -27,9 +27,10 @@ MonoBehaviour:
       NoiseOffset: 0
       Threshold: 0
     highResProfile:
-      Scale: 0.1
+      Scale: 0.025
       NoiseOffset: 3
-      Threshold: 0.274
+      Threshold: 0.715
     lowResStep: 1
     FillAsteroids: 0
-    IsClever: 0
+    IsClever: 1
+    MaxBorderBlocks: 10000
