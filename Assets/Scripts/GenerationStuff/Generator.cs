@@ -22,8 +22,14 @@ namespace DefaultNamespace.GenerationStuff
         public void GenerateChunk(Vector3Int chunkPos)
         {
             offset = chunkPos * ChunkSize;
-            // LowResScan();
-            JustAdd();
+            if(config.IsClever)
+            {
+                LowResScan();
+            }
+            else
+            {
+                JustAdd();
+            }
             generatedChunks.Add(chunkPos);
         }
 
@@ -157,7 +163,7 @@ namespace DefaultNamespace.GenerationStuff
         {
             if (solidTests.TryGetValue(point, out var result)) 
                 return result;
-            return solidTests[point] = config.highResProfile.Test(point);
+            return solidTests[point] = config.highResProfile.Test(point.x, point.y, point.z);
         }
     }
     
@@ -179,5 +185,6 @@ namespace DefaultNamespace.GenerationStuff
         public CheckingGenProfile highResProfile;
         public int lowResStep = 4;
         public bool FillAsteroids = false;
+        public bool IsClever = true;
     }
 }

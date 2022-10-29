@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -13,6 +14,7 @@ namespace DefaultNamespace.GenerationStuff
         {
             public GameObject AsteroidPrefab;
             public VoxelMeshData meshData;
+            public bool IsClever = true;
         }
         
         [Inject] private Generator generator;
@@ -29,13 +31,30 @@ namespace DefaultNamespace.GenerationStuff
         public void GenerateMeshes()
         {
             InitParent();
+            if (config.IsClever)
+                GenerateDefault();
+            else GenerateSimple();
+        }
 
+        private void GenerateDefault()
+        {
             var i = 0;
             foreach (var data in generator.Data.Asteroids)
             {
                 var asteroid = Spawn($"asteroid [{i}]", parentGo.transform);
                 var mesh = MakeMesh(data);
                 asteroid.SetMesh(mesh);
+                i++;
+            }
+        }
+
+        private void GenerateSimple()
+        {
+            var i = 0;
+            foreach (var data in generator.Data.Asteroids)
+            {
+                var asteroid = Spawn($"asteroid [{i}]", parentGo.transform);
+                asteroid.transform.position = data.Bordered.First();
                 i++;
             }
         }
