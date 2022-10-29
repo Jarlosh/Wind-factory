@@ -18,11 +18,11 @@ namespace DefaultNamespace.GenerationStuff
         public static float Noise(float x, float y, float z, float offset, float scale)
         {
             offset += RandomSeed.Seed;
-            return Noise((x + offset) * scale, (y + offset) * scale, (z + offset) * scale);
+            return Noise((x) * scale + offset, (y) * scale + offset, (z) * scale + offset);
         }
-        
+
         #endregion
-        
+
         #region Noise functions
 
         public static float Noise(float x)

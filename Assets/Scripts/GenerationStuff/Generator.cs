@@ -92,10 +92,12 @@ namespace DefaultNamespace.GenerationStuff
             var stack = new Stack<Vector3Int>();
             stack.Push(start);
             var tested = new HashSet<Vector3Int>();
+            var possibleInner = new HashSet<Vector3Int>();
             var neigbourSolidness = new bool[directionsCount];
             
             // yea I know we don't need to check first point, surelly its border, but i.d.c.
-            while (stack.TryPop(out var point) && asteroid.Bordered.Count < 1000)
+            var maxBlocks = config.MaxBorderBlocks;
+            while (stack.TryPop(out var point) && asteroid.Bordered.Count < maxBlocks)
             {
                 var isBorder = false;
                 for (var i = 0; i < directionsCount; i++)
@@ -103,11 +105,33 @@ namespace DefaultNamespace.GenerationStuff
                     var isSolid = neigbourSolidness[i] = IsSolid(point + directions[i]);
                     isBorder |= !isSolid;
                 }
-                
-                if (isBorder || config.FillAsteroids)
-                {
-                    asteroid.Bordered.Add(point);
 
+                var secondChance = false;
+                if (!isBorder)
+                {
+                    if (possibleInner.Contains(point))
+                    {
+                        secondChance = true;
+                        possibleInner.Remove(point);
+                    }
+                }
+                
+                if (isBorder)
+                {
+                    AddNeighbours();
+                    asteroid.Bordered.Add(point);
+                    asteroid.Neighbours[point] = neigbourSolidness;
+                    neigbourSolidness = new bool[6];
+                }
+                else if (secondChance || config.FillAsteroids)
+                {
+                    AddNeighbours();
+                }
+
+                tested.Add(point);
+                
+                void AddNeighbours()
+                {
                     for (int i = 0; i < directionsCount; i++)
                     {
                         if (neigbourSolidness[i])
@@ -116,15 +140,14 @@ namespace DefaultNamespace.GenerationStuff
                             if (!tested.Contains(neighbour))
                             {
                                 stack.Push(neighbour);
+                                if(isBorder)
+                                {
+                                    possibleInner.Add(neighbour);
+                                }
                             }
                         }
                     }
-
-                    asteroid.Neighbours[point] = neigbourSolidness;
-                    neigbourSolidness = new bool[6];
                 }
-
-                tested.Add(point);
             }
         }
 
@@ -186,5 +209,6 @@ namespace DefaultNamespace.GenerationStuff
         public int lowResStep = 4;
         public bool FillAsteroids = false;
         public bool IsClever = true;
+        public int MaxBorderBlocks = 100000;
     }
 }

@@ -34,7 +34,7 @@ namespace DefaultNamespace.GenerationStuff
 
         public bool Test(float x, float y, float z)
         {
-            return GetNoise(x, y, z) <= Threshold;
+            return GetNoise(x, y, z) > Threshold;
         }
     }
 }
