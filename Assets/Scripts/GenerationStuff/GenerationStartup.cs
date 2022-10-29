@@ -16,16 +16,17 @@ namespace DefaultNamespace.GenerationStuff
         public void Initialize()
         {
             VoxelData.ChunkSize = config.ChunkSize;
-            Noise.Seed = config.RandomSeed ? Mathf.FloorToInt(Random.value * int.MaxValue) : config.Seed;
+            SetSeed();
             Generate();
+        }
+
+        private void SetSeed()
+        {
+            RandomSeed.Seed = config.RandomSeed ? RandomSeed.GenerateRandom() : config.Seed;
         }
 
         private void Generate()
         {
-            if (config.RandomSeed)
-            {
-                Noise.Seed = Mathf.FloorToInt(Random.value * int.MaxValue);
-            }
             var startSize = config.StartSize;
             for (int x = 0; x < startSize.x; x++)
             for (int y = 0; y < startSize.y; y++)
@@ -55,9 +56,15 @@ namespace DefaultNamespace.GenerationStuff
         {
             public bool RandomSeed = false;
             [HideIf(nameof(RandomSeed))]
+            [InlineButton(nameof(RandomizeSeed))]
             public int Seed = 0;
             public int ChunkSize = 16;
             public Vector3 StartSize = Vector3.one * 5;
+
+            void RandomizeSeed()
+            {
+                Seed = GenerationStuff.RandomSeed.GenerateRandom(10000);
+            }
         }
     }
 }

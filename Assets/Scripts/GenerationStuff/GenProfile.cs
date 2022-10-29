@@ -17,14 +17,15 @@ namespace DefaultNamespace.GenerationStuff
         
         public float GetNoise(float x, float y, float z)
         {
-            return Noise.GetPerlin3D(x, y, z, NoiseOffset, Scale);
+            // Perlin.Noise is [-1, 1], so clamp it to [0, 1]
+            return (Perlin.Noise(x, y, z, NoiseOffset, Scale) + 1) / 2;
         }
     }
     
     [Serializable]
     public class CheckingGenProfile : GenProfile
     {
-        [Range(0,1)] public float Threshold;
+        [Range(0, 1)] public float Threshold;
 
         public bool Test(Vector3 pos)
         {
@@ -33,7 +34,7 @@ namespace DefaultNamespace.GenerationStuff
 
         public bool Test(float x, float y, float z)
         {
-            return Noise.CheckPerlin3D(x, y, z, NoiseOffset, Scale, Threshold);
+            return GetNoise(x, y, z) <= Threshold;
         }
     }
 }
